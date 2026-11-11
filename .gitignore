@@ -1,0 +1,13 @@
+node_modules/
+.serverless/
+frontend/js/config.js
+*.pyc
+__pycache__/
+.env
+
+web/node_modules/
+web/dist/
+mobile/node_modules/
+mobile/dist/
+mobile/.expo/
+*.log

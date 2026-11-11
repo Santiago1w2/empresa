@@ -1,0 +1,817 @@
+org: sebastianlizarraga
+service: santa-anita-conecta
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: python3.12
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'us-east-1'}
+  timeout: 10
+  memorySize: 256
+  httpApi:
+    cors: true
+  environment:
+    JWT_SECRET: ${env:JWT_SECRET, 'santa-anita-conecta-cambia-esta-clave'}
+    BUCKET_ARCHIVOS:
+      Ref: CuboArchivos
+    T_USUARIOS:
+      Ref: TablaUsuarios
+    T_SOLICITUDES:
+      Ref: TablaSolicitudes
+    T_PASOS:
+      Ref: TablaPasos
+    T_COMENTARIOS:
+      Ref: TablaComentarios
+    T_PROYECTOS:
+      Ref: TablaProyectos
+    T_TAREAS:
+      Ref: TablaTareas
+    T_BITACORA:
+      Ref: TablaBitacora
+    T_ANUNCIOS:
+      Ref: TablaAnuncios
+    T_LECTURAS:
+      Ref: TablaLecturas
+    T_EVENTOS:
+      Ref: TablaEventos
+    T_NOTIFICACIONES:
+      Ref: TablaNotificaciones
+    T_MENSAJES:
+      Ref: TablaMensajes
+    T_DOCUMENTOS:
+      Ref: TablaDocumentos
+    T_AUTORIZACIONES:
+      Ref: TablaAutorizaciones
+    T_AUDITORIA:
+      Ref: TablaAuditoria
+    T_CATALOGOS:
+      Ref: TablaCatalogos
+    T_QRS:
+      Ref: TablaQrs
+  iam:
+    role: arn:aws:iam::123456789012:role/LabRole
+
+package:
+  patterns:
+    - 'src/**'
+    - '!frontend/**'
+    - '!web/**'
+    - '!mobile/**'
+    - '!**/node_modules/**'
+    - '!.serverless/**'
+    - '!*.md'
+    - '!deploy.ps1'
+    - '!deploy.sh'
+
+functions:
+  registrar:
+    handler: src/functions/auth.registrar
+    events:
+      - httpApi:
+          method: post
+          path: /auth/registrar
+  login:
+    handler: src/functions/auth.login
+    events:
+      - httpApi:
+          method: post
+          path: /auth/login
+  yo:
+    handler: src/functions/auth.yo
+    events:
+      - httpApi:
+          method: get
+          path: /auth/yo
+  usuariosListar:
+    handler: src/functions/usuarios.listar
+    events:
+      - httpApi:
+          method: get
+          path: /usuarios
+  usuariosCrear:
+    handler: src/functions/usuarios.crear
+    events:
+      - httpApi:
+          method: post
+          path: /usuarios
+  usuariosActualizar:
+    handler: src/functions/usuarios.actualizar
+    events:
+      - httpApi:
+          method: put
+          path: /usuarios/{id}
+  solicitudesListar:
+    handler: src/functions/solicitudes.listar
+    events:
+      - httpApi:
+          method: get
+          path: /solicitudes
+  solicitudesCrear:
+    handler: src/functions/solicitudes.crear
+    events:
+      - httpApi:
+          method: post
+          path: /solicitudes
+  solicitudesObtener:
+    handler: src/functions/solicitudes.obtener
+    events:
+      - httpApi:
+          method: get
+          path: /solicitudes/{id}
+  solicitudesActualizar:
+    handler: src/functions/solicitudes.actualizar
+    events:
+      - httpApi:
+          method: put
+          path: /solicitudes/{id}
+  solicitudesAccion:
+    handler: src/functions/solicitudes.accion
+    events:
+      - httpApi:
+          method: post
+          path: /solicitudes/{id}/accion
+  comentariosCrear:
+    handler: src/functions/comentarios.crear
+    events:
+      - httpApi:
+          method: post
+          path: /solicitudes/{id}/comentarios
+  autorizacionesListar:
+    handler: src/functions/autorizaciones.listar
+    events:
+      - httpApi:
+          method: get
+          path: /autorizaciones
+  autorizacionesDecidir:
+    handler: src/functions/autorizaciones.decidir
+    events:
+      - httpApi:
+          method: post
+          path: /autorizaciones/{id}/decidir
+  proyectosListar:
+    handler: src/functions/proyectos.listar
+    events:
+      - httpApi:
+          method: get
+          path: /proyectos
+  proyectosCrear:
+    handler: src/functions/proyectos.crear
+    events:
+      - httpApi:
+          method: post
+          path: /proyectos
+  proyectosObtener:
+    handler: src/functions/proyectos.obtener
+    events:
+      - httpApi:
+          method: get
+          path: /proyectos/{id}
+  proyectosActualizar:
+    handler: src/functions/proyectos.actualizar
+    events:
+      - httpApi:
+          method: put
+          path: /proyectos/{id}
+  proyectosUnirse:
+    handler: src/functions/proyectos.unirse
+    events:
+      - httpApi:
+          method: post
+          path: /proyectos/{id}/unirse
+  tareasCrear:
+    handler: src/functions/proyectos.tarea_crear
+    events:
+      - httpApi:
+          method: post
+          path: /proyectos/{id}/tareas
+  tareasActualizar:
+    handler: src/functions/proyectos.tarea_actualizar
+    events:
+      - httpApi:
+          method: put
+          path: /proyectos/{id}/tareas/{tareaId}
+  bitacoraCrear:
+    handler: src/functions/proyectos.bitacora
+    events:
+      - httpApi:
+          method: post
+          path: /proyectos/{id}/bitacora
+  legadoGuardar:
+    handler: src/functions/proyectos.legado
+    events:
+      - httpApi:
+          method: put
+          path: /proyectos/{id}/legado
+  anunciosListar:
+    handler: src/functions/anuncios.listar
+    events:
+      - httpApi:
+          method: get
+          path: /anuncios
+  anunciosCrear:
+    handler: src/functions/anuncios.crear
+    events:
+      - httpApi:
+          method: post
+          path: /anuncios
+  anunciosObtener:
+    handler: src/functions/anuncios.obtener
+    events:
+      - httpApi:
+          method: get
+          path: /anuncios/{id}
+  anunciosLeer:
+    handler: src/functions/anuncios.leer
+    events:
+      - httpApi:
+          method: post
+          path: /anuncios/{id}/leer
+  anunciosLecturas:
+    handler: src/functions/anuncios.lecturas
+    events:
+      - httpApi:
+          method: get
+          path: /anuncios/{id}/lecturas
+  eventosListar:
+    handler: src/functions/eventos.listar
+    events:
+      - httpApi:
+          method: get
+          path: /eventos
+  eventosCrear:
+    handler: src/functions/eventos.crear
+    events:
+      - httpApi:
+          method: post
+          path: /eventos
+  eventosEliminar:
+    handler: src/functions/eventos.eliminar
+    events:
+      - httpApi:
+          method: delete
+          path: /eventos/{id}
+  notificacionesListar:
+    handler: src/functions/notificaciones.listar
+    events:
+      - httpApi:
+          method: get
+          path: /notificaciones
+  notificacionesLeer:
+    handler: src/functions/notificaciones.leer
+    events:
+      - httpApi:
+          method: put
+          path: /notificaciones/{id}/leer
+  mensajesListar:
+    handler: src/functions/mensajes.listar
+    events:
+      - httpApi:
+          method: get
+          path: /mensajes
+  mensajesEnviar:
+    handler: src/functions/mensajes.enviar
+    events:
+      - httpApi:
+          method: post
+          path: /mensajes
+  documentosListar:
+    handler: src/functions/documentos.listar
+    events:
+      - httpApi:
+          method: get
+          path: /documentos
+  documentosCrear:
+    handler: src/functions/documentos.crear
+    events:
+      - httpApi:
+          method: post
+          path: /documentos
+  documentosEliminar:
+    handler: src/functions/documentos.eliminar
+    events:
+      - httpApi:
+          method: delete
+          path: /documentos/{id}
+  archivosSubidaUrl:
+    handler: src/functions/archivos.subida
+    events:
+      - httpApi:
+          method: post
+          path: /archivos/subida-url
+  archivosDescargaUrl:
+    handler: src/functions/archivos.descarga
+    events:
+      - httpApi:
+          method: get
+          path: /archivos/descarga-url
+  indicadores:
+    handler: src/functions/indicadores.handler
+    timeout: 29
+    events:
+      - httpApi:
+          method: get
+          path: /indicadores
+  auditoriaListar:
+    handler: src/functions/auditoria.listar
+    timeout: 29
+    events:
+      - httpApi:
+          method: get
+          path: /auditoria
+  catalogosObtener:
+    handler: src/functions/catalogos.obtener
+    events:
+      - httpApi:
+          method: get
+          path: /catalogos
+  catalogosGuardar:
+    handler: src/functions/catalogos.guardar
+    events:
+      - httpApi:
+          method: put
+          path: /catalogos
+  qrsCrear:
+    handler: src/functions/qrs.crear
+    events:
+      - httpApi:
+          method: post
+          path: /qrs
+  qrsListar:
+    handler: src/functions/qrs.listar
+    events:
+      - httpApi:
+          method: get
+          path: /qrs
+  qrsObtener:
+    handler: src/functions/qrs.obtener
+    events:
+      - httpApi:
+          method: get
+          path: /qrs/{id}
+  qrsCheckin:
+    handler: src/functions/qrs.checkin
+    events:
+      - httpApi:
+          method: post
+          path: /qrs/{id}/checkin
+  slaMonitor:
+    handler: src/functions/sistema.sla_monitor
+    timeout: 60
+    events:
+      - schedule:
+          rate: rate(1 hour)
+          enabled: true
+  seed:
+    handler: src/functions/sistema.seed
+    timeout: 60
+
+resources:
+  Outputs:
+    ApiUrl:
+      Value:
+        Fn::GetAtt: [HttpApi, ApiEndpoint]
+      Export:
+        Name: sac-api-url-${sls:stage}
+    UrlFront:
+      Value:
+        Fn::GetAtt: [DistribucionFront, DomainName]
+    IdFront:
+      Value:
+        Ref: DistribucionFront
+    CuboFrontNombre:
+      Value:
+        Ref: CuboFront
+  Resources:
+    TablaUsuarios:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        BillingMode: PAY_PER_REQUEST
+        PointInTimeRecoverySpecification:
+          PointInTimeRecoveryEnabled: true
+        AttributeDefinitions:
+          - AttributeName: usuarioId
+            AttributeType: S
+          - AttributeName: email
+            AttributeType: S
+          - AttributeName: rol
+            AttributeType: S
+        KeySchema:
+          - AttributeName: usuarioId
+            KeyType: HASH
+        GlobalSecondaryIndexes:
+          - IndexName: por-email
+            KeySchema:
+              - AttributeName: email
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+          - IndexName: por-rol
+            KeySchema:
+              - AttributeName: rol
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+    TablaSolicitudes:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        BillingMode: PAY_PER_REQUEST
+        PointInTimeRecoverySpecification:
+          PointInTimeRecoveryEnabled: true
+        AttributeDefinitions:
+          - AttributeName: solicitudId
+            AttributeType: S
+          - AttributeName: solicitanteId
+            AttributeType: S
+          - AttributeName: revisorActualId
+            AttributeType: S
+          - AttributeName: estado
+            AttributeType: S
+          - AttributeName: creadoEn
+            AttributeType: S
+        KeySchema:
+          - AttributeName: solicitudId
+            KeyType: HASH
+        GlobalSecondaryIndexes:
+          - IndexName: por-solicitante
+            KeySchema:
+              - AttributeName: solicitanteId
+                KeyType: HASH
+              - AttributeName: creadoEn
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+          - IndexName: por-revisor
+            KeySchema:
+              - AttributeName: revisorActualId
+                KeyType: HASH
+              - AttributeName: creadoEn
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+          - IndexName: por-estado
+            KeySchema:
+              - AttributeName: estado
+                KeyType: HASH
+              - AttributeName: creadoEn
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+    TablaPasos:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: solicitudId
+            AttributeType: S
+          - AttributeName: pasoId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: solicitudId
+            KeyType: HASH
+          - AttributeName: pasoId
+            KeyType: RANGE
+    TablaComentarios:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: solicitudId
+            AttributeType: S
+          - AttributeName: creadoEn__id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: solicitudId
+            KeyType: HASH
+          - AttributeName: creadoEn__id
+            KeyType: RANGE
+    TablaProyectos:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: proyectoId
+            AttributeType: S
+          - AttributeName: estado
+            AttributeType: S
+          - AttributeName: creadoEn
+            AttributeType: S
+        KeySchema:
+          - AttributeName: proyectoId
+            KeyType: HASH
+        GlobalSecondaryIndexes:
+          - IndexName: por-estado
+            KeySchema:
+              - AttributeName: estado
+                KeyType: HASH
+              - AttributeName: creadoEn
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+    TablaTareas:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: proyectoId
+            AttributeType: S
+          - AttributeName: tareaId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: proyectoId
+            KeyType: HASH
+          - AttributeName: tareaId
+            KeyType: RANGE
+    TablaBitacora:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: proyectoId
+            AttributeType: S
+          - AttributeName: creadoEn__id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: proyectoId
+            KeyType: HASH
+          - AttributeName: creadoEn__id
+            KeyType: RANGE
+    TablaAnuncios:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: anuncioId
+            AttributeType: S
+          - AttributeName: categoria
+            AttributeType: S
+          - AttributeName: creadoEn
+            AttributeType: S
+        KeySchema:
+          - AttributeName: anuncioId
+            KeyType: HASH
+        GlobalSecondaryIndexes:
+          - IndexName: por-categoria
+            KeySchema:
+              - AttributeName: categoria
+                KeyType: HASH
+              - AttributeName: creadoEn
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+    TablaLecturas:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: anuncioId
+            AttributeType: S
+          - AttributeName: usuarioId
+            AttributeType: S
+          - AttributeName: leidoEn
+            AttributeType: S
+        KeySchema:
+          - AttributeName: anuncioId
+            KeyType: HASH
+          - AttributeName: usuarioId
+            KeyType: RANGE
+        GlobalSecondaryIndexes:
+          - IndexName: por-usuario
+            KeySchema:
+              - AttributeName: usuarioId
+                KeyType: HASH
+              - AttributeName: leidoEn
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+    TablaEventos:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: eventoId
+            AttributeType: S
+          - AttributeName: fecha
+            AttributeType: S
+          - AttributeName: horaInicio
+            AttributeType: S
+          - AttributeName: ambienteId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: eventoId
+            KeyType: HASH
+        GlobalSecondaryIndexes:
+          - IndexName: por-fecha
+            KeySchema:
+              - AttributeName: fecha
+                KeyType: HASH
+              - AttributeName: horaInicio
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+          - IndexName: por-ambiente
+            KeySchema:
+              - AttributeName: ambienteId
+                KeyType: HASH
+              - AttributeName: fecha
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+    TablaNotificaciones:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: usuarioId
+            AttributeType: S
+          - AttributeName: creadoEn__id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: usuarioId
+            KeyType: HASH
+          - AttributeName: creadoEn__id
+            KeyType: RANGE
+    TablaMensajes:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: hiloId
+            AttributeType: S
+          - AttributeName: creadoEn__id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: hiloId
+            KeyType: HASH
+          - AttributeName: creadoEn__id
+            KeyType: RANGE
+    TablaDocumentos:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: documentoId
+            AttributeType: S
+          - AttributeName: tipo
+            AttributeType: S
+          - AttributeName: creadoEn
+            AttributeType: S
+        KeySchema:
+          - AttributeName: documentoId
+            KeyType: HASH
+        GlobalSecondaryIndexes:
+          - IndexName: por-tipo
+            KeySchema:
+              - AttributeName: tipo
+                KeyType: HASH
+              - AttributeName: creadoEn
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+    TablaAutorizaciones:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: autorizacionId
+            AttributeType: S
+          - AttributeName: apoderadoId
+            AttributeType: S
+          - AttributeName: creadoEn
+            AttributeType: S
+          - AttributeName: solicitudId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: autorizacionId
+            KeyType: HASH
+        GlobalSecondaryIndexes:
+          - IndexName: por-apoderado
+            KeySchema:
+              - AttributeName: apoderadoId
+                KeyType: HASH
+              - AttributeName: creadoEn
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+          - IndexName: por-solicitud
+            KeySchema:
+              - AttributeName: solicitudId
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+    TablaAuditoria:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: tipo
+            AttributeType: S
+          - AttributeName: creadoEn__id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: tipo
+            KeyType: HASH
+          - AttributeName: creadoEn__id
+            KeyType: RANGE
+    TablaCatalogos:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: catalogoId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: catalogoId
+            KeyType: HASH
+    TablaQrs:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: codigo
+            AttributeType: S
+          - AttributeName: creadoPor
+            AttributeType: S
+        KeySchema:
+          - AttributeName: codigo
+            KeyType: HASH
+        GlobalSecondaryIndexes:
+          - IndexName: por-creador
+            KeySchema:
+              - AttributeName: creadoPor
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+    CuboFront:
+      Type: AWS::S3::Bucket
+      Properties:
+        WebsiteConfiguration:
+          IndexDocument: index.html
+          ErrorDocument: index.html
+        PublicAccessBlockConfiguration:
+          BlockPublicAcls: false
+          IgnorePublicAcls: false
+          BlockPublicPolicy: false
+          RestrictPublicBuckets: false
+    CuboFrontPolitica:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket:
+          Ref: CuboFront
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal: '*'
+              Action: s3:GetObject
+              Resource:
+                Fn::Sub: '${CuboFront.Arn}/*'
+    CuboArchivos:
+      Type: AWS::S3::Bucket
+      Properties:
+        CorsConfiguration:
+          CorsRules:
+            - AllowedMethods:
+                - GET
+                - PUT
+              AllowedOrigins:
+                - '*'
+              AllowedHeaders:
+                - '*'
+              MaxAge: 3000
+    DistribucionFront:
+      Type: AWS::CloudFront::Distribution
+      DependsOn: CuboFrontPolitica
+      Properties:
+        DistributionConfig:
+          Enabled: true
+          Comment: Santa Anita Conecta web
+          DefaultRootObject: index.html
+          Origins:
+            - Id: front
+              DomainName:
+                Fn::GetAtt: [CuboFront, RegionalDomainName]
+              CustomOriginConfig:
+                OriginProtocolPolicy: http-only
+          DefaultCacheBehavior:
+            TargetOriginId: front
+            ViewerProtocolPolicy: redirect-to-https
+            AllowedMethods:
+              - GET
+              - HEAD
+              - OPTIONS
+            CachedMethods:
+              - GET
+              - HEAD
+            Compress: true
+            ForwardedValues:
+              QueryString: false
+              Cookies:
+                Forward: none
+          CustomErrorResponses:
+            - ErrorCode: 403
+              ResponseCode: 200
+              ResponsePagePath: /index.html
+            - ErrorCode: 404
+              ResponseCode: 200
+              ResponsePagePath: /index.html

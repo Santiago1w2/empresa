@@ -1,0 +1,15 @@
+{
+  "name": "santa-anita-conecta",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Santa Anita Conecta - plataforma serverless (AWS Lambda + DynamoDB + S3/CloudFront)",
+  "scripts": {
+    "deploy": "serverless deploy",
+    "remove": "serverless remove",
+    "seed": "serverless invoke -f seed",
+    "logs": "serverless logs -f slaMonitor"
+  },
+  "devDependencies": {
+    "serverless": "^3.40.0"
+  }
+}

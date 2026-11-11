@@ -1,0 +1,29 @@
+{
+  "expo": {
+    "name": "Santa Anita Conecta",
+    "slug": "santa-anita-conecta",
+    "version": "1.0.0",
+    "scheme": "sac",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "platforms": ["ios", "android"],
+    "ios": {
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "Se usa la cámara para escanear los códigos QR del colegio."
+      }
+    },
+    "android": {
+      "package": "pe.edu.santaanita.conecta",
+      "permissions": ["CAMERA", "VIBRATE"]
+    },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Se usa la cámara para escanear los códigos QR del colegio."
+        }
+      ]
+    ]
+  }
+}

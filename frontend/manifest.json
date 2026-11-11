@@ -1,0 +1,26 @@
+{
+  "name": "Santa Anita Conecta",
+  "short_name": "SA Conecta",
+  "description": "La plataforma oficial del Colegio Santa Anita: solicitudes, proyectos, anuncios, calendario y comunicacion escolar.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#eef2f7",
+  "theme_color": "#2563eb",
+  "lang": "es",
+  "icons": [
+    {
+      "src": "icono.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icono.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
