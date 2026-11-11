@@ -373,15 +373,9 @@ resources:
         Fn::GetAtt: [HttpApi, ApiEndpoint]
       Export:
         Name: sac-api-url-${sls:stage}
-    UrlFront:
+    CuboArchivosNombre:
       Value:
-        Fn::GetAtt: [DistribucionFront, DomainName]
-    IdFront:
-      Value:
-        Ref: DistribucionFront
-    CuboFrontNombre:
-      Value:
-        Ref: CuboFront
+        Ref: CuboArchivos
   Resources:
     TablaUsuarios:
       Type: AWS::DynamoDB::Table
@@ -742,76 +736,3 @@ resources:
                 KeyType: HASH
             Projection:
               ProjectionType: ALL
-    CuboFront:
-      Type: AWS::S3::Bucket
-      Properties:
-        WebsiteConfiguration:
-          IndexDocument: index.html
-          ErrorDocument: index.html
-        PublicAccessBlockConfiguration:
-          BlockPublicAcls: false
-          IgnorePublicAcls: false
-          BlockPublicPolicy: false
-          RestrictPublicBuckets: false
-    CuboFrontPolitica:
-      Type: AWS::S3::BucketPolicy
-      Properties:
-        Bucket:
-          Ref: CuboFront
-        PolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Principal: '*'
-              Action: s3:GetObject
-              Resource:
-                Fn::Sub: '${CuboFront.Arn}/*'
-    CuboArchivos:
-      Type: AWS::S3::Bucket
-      Properties:
-        CorsConfiguration:
-          CorsRules:
-            - AllowedMethods:
-                - GET
-                - PUT
-              AllowedOrigins:
-                - '*'
-              AllowedHeaders:
-                - '*'
-              MaxAge: 3000
-    DistribucionFront:
-      Type: AWS::CloudFront::Distribution
-      DependsOn: CuboFrontPolitica
-      Properties:
-        DistributionConfig:
-          Enabled: true
-          Comment: Santa Anita Conecta web
-          DefaultRootObject: index.html
-          Origins:
-            - Id: front
-              DomainName:
-                Fn::GetAtt: [CuboFront, RegionalDomainName]
-              CustomOriginConfig:
-                OriginProtocolPolicy: http-only
-          DefaultCacheBehavior:
-            TargetOriginId: front
-            ViewerProtocolPolicy: redirect-to-https
-            AllowedMethods:
-              - GET
-              - HEAD
-              - OPTIONS
-            CachedMethods:
-              - GET
-              - HEAD
-            Compress: true
-            ForwardedValues:
-              QueryString: false
-              Cookies:
-                Forward: none
-          CustomErrorResponses:
-            - ErrorCode: 403
-              ResponseCode: 200
-              ResponsePagePath: /index.html
-            - ErrorCode: 404
-              ResponseCode: 200
-              ResponsePagePath: /index.html
