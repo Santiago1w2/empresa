@@ -1,4 +1,4 @@
-org: sebastianlizarraga
+org: santiagomorales
 service: santa-anita-conecta
 frameworkVersion: '3'
 
@@ -50,7 +50,7 @@ provider:
     T_QRS:
       Ref: TablaQrs
   iam:
-    role: arn:aws:iam::123456789012:role/LabRole
+    role: arn:aws:iam::573505212581:role/LabRole
 
 package:
   patterns:
